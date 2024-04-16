@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Heliondata.Models
 {
     public class Process
     {
+        [Key]
         public int ID { get; set; }
         public DateTime Date { get; set; }
         public Company Company { get; set; }

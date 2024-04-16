@@ -1,21 +1,21 @@
 using Heliondata.Models;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.EntityFrameworkCore;
 
 namespace Heliondata.Data
 {
     public class HelionDBContext : DbContext
     {
-        // Define your DbSet properties here, each representing a table in your database
-        // For example:
-        // public DbSet<YourEntity> YourEntities { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Representative> Representatives { get; set; }
+        public DbSet<Workplace> Workplaces { get; set; }
+        public DbSet<Models.System> Systems { get; set; }
+        public DbSet<Process> Processes { get; set; }
 
-        // Constructor to pass options to the base DbContext class    public DbSet<Book> Book { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=localhost;database=library;user=user;password=password");
+            optionsBuilder.UseMySQL("server=localhost;database=helion;user=root;password=1234");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,12 +30,11 @@ namespace Heliondata.Data
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasKey(e => e.Name);
-                entity.Property(e => e.Title).IsRequired();
-                entity.HasOne(d => d.Publisher)
-            .WithMany(p => p.Books);
+                entity.HasKey(e => e.ID);
+                entity.Property(e => e.FirstName).IsRequired();
+                entity.Property(d => d.LastName).IsRequired();
+                entity.Property(d => d.Position).IsRequired();
             });
         }
     }
-}
 }
