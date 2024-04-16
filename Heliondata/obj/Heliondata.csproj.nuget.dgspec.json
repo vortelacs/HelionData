@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj": {}
+    "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj": {}
   },
   "projects": {
-    "d:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj": {
+    "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
+        "projectUniqueName": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
         "projectName": "Heliondata",
-        "projectPath": "d:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
+        "projectPath": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
         "packagesPath": "C:\\Users\\vorte\\.nuget\\packages\\",
-        "outputPath": "d:\\Projects\\DotNet\\HelionData\\Heliondata\\obj\\",
+        "outputPath": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vorte\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -49,10 +49,6 @@
             "MySql.Data": {
               "target": "Package",
               "version": "[8.3.0, )"
-            },
-            "MySql.Data.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[8.0.22, )"
             },
             "MySql.EntityFrameworkCore": {
               "target": "Package",

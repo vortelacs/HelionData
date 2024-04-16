@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "s3L2DfHndtd1PtKLvX6Iezp04aKnv951ap7nLEGYesi0m6zNf8UDjrXbfMb35Uf18RIYR7msk5LUr7UY6V490g==",
+  "dgSpecHash": "sXyeEERYjJv9YX5Ug1f643pySKzZBWGS7OZF1vTnczqIIYN5OrcVtBFJXLZw4IPaMWu3fzTjsKRHruxBZYw60Q==",
   "success": true,
-  "projectFilePath": "d:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
+  "projectFilePath": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vorte\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "C:\\Users\\vorte\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
@@ -29,7 +29,6 @@
     "C:\\Users\\vorte\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\vorte\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\vorte\\.nuget\\packages\\mysql.data\\8.3.0\\mysql.data.8.3.0.nupkg.sha512",
-    "C:\\Users\\vorte\\.nuget\\packages\\mysql.data.entityframeworkcore\\8.0.22\\mysql.data.entityframeworkcore.8.0.22.nupkg.sha512",
     "C:\\Users\\vorte\\.nuget\\packages\\mysql.entityframeworkcore\\8.0.0\\mysql.entityframeworkcore.8.0.0.nupkg.sha512",
     "C:\\Users\\vorte\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\vorte\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
