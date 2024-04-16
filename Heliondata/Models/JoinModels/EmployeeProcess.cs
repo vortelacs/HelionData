@@ -15,5 +15,6 @@ namespace Heliondata.Models.JoinModels
         [ForeignKey("ProcessId")]
         public int ProcessId { get; set; }
         public Process Process { get; set; }
+
     }
 }

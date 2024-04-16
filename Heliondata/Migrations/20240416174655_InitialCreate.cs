@@ -4,6 +4,8 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Heliondata.Migrations
 {
     /// <inheritdoc />
@@ -209,6 +211,24 @@ namespace Heliondata.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Companies",
+                columns: new[] { "ID", "CUI", "Name" },
+                values: new object[,]
+                {
+                    { 1, 123456789, "Company A" },
+                    { 2, 987654321, "Company B" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Representatives",
+                columns: new[] { "ID", "CompanyID", "Email", "FirstName", "LastName", "Position" },
+                values: new object[,]
+                {
+                    { 1, null, "john.doe@example.com", "John", "Doe", "Manager" },
+                    { 2, null, "alice.smith@example.com", "Alice", "Smith", "Supervisor" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeProcess_EmployeeId",

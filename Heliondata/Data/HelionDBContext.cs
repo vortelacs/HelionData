@@ -35,6 +35,40 @@ namespace Heliondata.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Representative>().HasData(
+            new Representative { ID = 1, FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Position = "Manager" },
+            new Representative { ID = 2, FirstName = "Alice", LastName = "Smith", Email = "alice.smith@example.com", Position = "Supervisor" },
+            new Representative { ID = 3, FirstName = "Bob", LastName = "Johnson", Email = "bob.johnson@example.com", Position = "Director" },
+            new Representative { ID = 4, FirstName = "Emma", LastName = "Brown", Email = "emma.brown@example.com", Position = "Coordinator" }
+
+
+        // Add more representatives as needed
+        );
+
+            modelBuilder.Entity<Company>().HasData(
+        new Company
+        {
+            ID = 1,
+            CUI = 123456789,
+            Name = "Company A",
+            Representatives = new List<Representative>
+            {
+                new Representative { ID = 1, FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Position = "Manager" }
+            }
+        },
+        new Company
+        {
+            ID = 2,
+            CUI = 987654321,
+            Name = "Company B",
+            Representatives = new List<Representative>
+            {
+                new Representative { ID = 4, FirstName = "Emma", LastName = "Brown", Email = "emma.brown@example.com", Position = "Coordinator" }
+            }
+        }
+        // Add more companies as needed
+        );
+
             // modelBuilder.Entity<Company>(entity =>
             // {
             //     entity.HasKey(e => e.ID);

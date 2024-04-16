@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Heliondata.Migrations
 {
     [DbContext(typeof(HelionDBContext))]
-    [Migration("20240416123143_InitialCreate")]
+    [Migration("20240416174655_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -37,6 +37,20 @@ namespace Heliondata.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Companies");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            CUI = 123456789,
+                            Name = "Company A"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            CUI = 987654321,
+                            Name = "Company B"
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.Employee", b =>
@@ -178,6 +192,24 @@ namespace Heliondata.Migrations
                     b.HasIndex("CompanyID");
 
                     b.ToTable("Representatives");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Email = "john.doe@example.com",
+                            FirstName = "John",
+                            LastName = "Doe",
+                            Position = "Manager"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Email = "alice.smith@example.com",
+                            FirstName = "Alice",
+                            LastName = "Smith",
+                            Position = "Supervisor"
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.Service", b =>

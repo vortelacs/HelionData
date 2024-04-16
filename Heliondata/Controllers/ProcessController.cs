@@ -1,7 +1,9 @@
-using Heliondata.Data;
 using Heliondata.Models;
+using Heliondata.Models.DTO;
+using Heliondata.Models.JoinModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProcessServ = Heliondata.Services.ProcessService;
 
 namespace Heliondata.Controllers
 {
@@ -10,18 +12,18 @@ namespace Heliondata.Controllers
     public class ProcessController : ControllerBase
     {
 
-        private readonly HelionDBContext _context;
+        private ProcessServ _processService;
 
-        public ProcessController(HelionDBContext context)
+        public ProcessController(ProcessServ processService)
         {
-            _context = context;
+            _processService = processService;
         }
 
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Process>> SaveProcess(Process process)
+        public async Task<ActionResult<Process>> SaveProcess(ProcessDTO processDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -31,8 +33,7 @@ namespace Heliondata.Controllers
 
             try
             {
-                _context.Processes.Add(process);
-                await _context.SaveChangesAsync();
+                Process process = _processService.SaveProcess(processDTO).Result;
                 return CreatedAtAction(nameof(GetProcessById), new { id = process.ID }, process);
             }
             catch (DbUpdateException)
@@ -46,7 +47,23 @@ namespace Heliondata.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Process>> GetProcessById(int id)
         {
-            var process = await _context.Processes.FindAsync(id);
+            var process = _processService.GetProcess(id);
+
+            if (process == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(process);
+        }
+
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<Process>>> GetAllProcess()
+        {
+            List<Process> process = _processService.GetAllProcess();
 
             if (process == null)
             {

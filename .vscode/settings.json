@@ -11,7 +11,7 @@
       "port": 3306,
       "driver": "MySQL",
       "name": "helion",
-      "database": "helion_data",
+      "database": "helion",
       "username": "root",
       "password": "1234"
     }
