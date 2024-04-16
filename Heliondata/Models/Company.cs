@@ -10,7 +10,5 @@ namespace Heliondata.Models
         public String Name { get; set; }
 
         public List<Representative> Representatives { get; set; }
-
-        public List<Workplace> Workplaces { get; set; }
     }
 }

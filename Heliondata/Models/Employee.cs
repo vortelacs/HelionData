@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Heliondata.Models.JoinModels;
 
 namespace Heliondata.Models
 {
@@ -9,5 +10,7 @@ namespace Heliondata.Models
         public String LastName { get; set; }
         public String FirstName { get; set; }
         public String Position { get; set; }
+
+        public List<EmployeeProcess> EmployeeProcesses { get; set; }
     }
 }

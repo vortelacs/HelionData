@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+
 namespace Heliondata.Models
 {
-    public class System
+    public class Service
     {
         [Key]
         public int ID { get; set; }
