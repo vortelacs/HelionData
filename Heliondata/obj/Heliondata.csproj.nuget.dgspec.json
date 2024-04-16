@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj": {}
+    "D:\\Projects\\DotNet\\HelionData\\HelionData\\Heliondata.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj": {
+    "D:\\Projects\\DotNet\\HelionData\\HelionData\\Heliondata.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
+        "projectUniqueName": "D:\\Projects\\DotNet\\HelionData\\HelionData\\Heliondata.csproj",
         "projectName": "Heliondata",
-        "projectPath": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\Heliondata.csproj",
+        "projectPath": "D:\\Projects\\DotNet\\HelionData\\HelionData\\Heliondata.csproj",
         "packagesPath": "C:\\Users\\vorte\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\DotNet\\HelionData\\Heliondata\\obj\\",
+        "outputPath": "D:\\Projects\\DotNet\\HelionData\\HelionData\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vorte\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -46,6 +46,22 @@
               "target": "Package",
               "version": "[8.0.4, )"
             },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
             "MySql.Data": {
               "target": "Package",
               "version": "[8.3.0, )"
@@ -53,6 +69,14 @@
             "MySql.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[6.5.0, )"
             }
           },
           "imports": [
