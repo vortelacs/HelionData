@@ -10,7 +10,7 @@ namespace Heliondata.Models
 
         [ForeignKey("CompanyId")]
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
 
         [ForeignKey("ProcessId")]
         public int ProcessId { get; set; }

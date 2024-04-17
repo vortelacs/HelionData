@@ -10,10 +10,10 @@ namespace Heliondata.Models.JoinModels
 
         [ForeignKey("ServiceId")]
         public int ServiceId { get; set; }
-        public Service Service { get; set; }
+        public virtual Service Service { get; set; }
 
         [ForeignKey("ProcessId")]
         public int ProcessId { get; set; }
-        public Process Process { get; set; }
+        public virtual Process Process { get; set; }
     }
 }

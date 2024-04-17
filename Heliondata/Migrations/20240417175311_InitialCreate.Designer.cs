@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Heliondata.Migrations
 {
     [DbContext(typeof(HelionDBContext))]
-    [Migration("20240416174655_InitialCreate")]
+    [Migration("20240417175311_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,6 +20,9 @@ namespace Heliondata.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Heliondata.Models.Company", b =>
@@ -71,6 +74,22 @@ namespace Heliondata.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            FirstName = "Sam",
+                            LastName = "Wilson",
+                            Position = "Analyst"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            FirstName = "Lucy",
+                            LastName = "Hart",
+                            Position = "Manager"
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.JoinModels.EmployeeProcess", b =>
@@ -92,6 +111,20 @@ namespace Heliondata.Migrations
                     b.HasIndex("ProcessId");
 
                     b.ToTable("EmployeeProcess");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            EmployeeId = 1,
+                            ProcessId = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            EmployeeId = 2,
+                            ProcessId = 2
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.JoinModels.ProcessService", b =>
@@ -113,6 +146,20 @@ namespace Heliondata.Migrations
                     b.HasIndex("ServiceId");
 
                     b.ToTable("ProcessService");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            ProcessId = 1,
+                            ServiceId = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            ProcessId = 2,
+                            ServiceId = 2
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.JoinModels.ProcessWorkplace", b =>
@@ -134,6 +181,20 @@ namespace Heliondata.Migrations
                     b.HasIndex("WorkplaceId");
 
                     b.ToTable("ProcessWorkplace");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            ProcessId = 1,
+                            WorkplaceId = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            ProcessId = 2,
+                            WorkplaceId = 2
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.Process", b =>
@@ -164,6 +225,24 @@ namespace Heliondata.Migrations
                     b.HasIndex("RepresentativeId");
 
                     b.ToTable("Processes");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            ESignature = "Signature1",
+                            GPSLocation = "Location1",
+                            RepresentativeId = 1,
+                            SignDate = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ID = 2,
+                            ESignature = "Signature2",
+                            GPSLocation = "Location2",
+                            RepresentativeId = 2,
+                            SignDate = new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.Representative", b =>
@@ -172,7 +251,7 @@ namespace Heliondata.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyID")
+                    b.Property<int>("CompanyID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -197,6 +276,7 @@ namespace Heliondata.Migrations
                         new
                         {
                             ID = 1,
+                            CompanyID = 1,
                             Email = "john.doe@example.com",
                             FirstName = "John",
                             LastName = "Doe",
@@ -205,10 +285,29 @@ namespace Heliondata.Migrations
                         new
                         {
                             ID = 2,
+                            CompanyID = 1,
                             Email = "alice.smith@example.com",
                             FirstName = "Alice",
                             LastName = "Smith",
                             Position = "Supervisor"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            CompanyID = 2,
+                            Email = "bob.johnson@example.com",
+                            FirstName = "Bob",
+                            LastName = "Johnson",
+                            Position = "Director"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            CompanyID = 2,
+                            Email = "emma.brown@example.com",
+                            FirstName = "Emma",
+                            LastName = "Brown",
+                            Position = "Coordinator"
                         });
                 });
 
@@ -224,6 +323,18 @@ namespace Heliondata.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Services");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Name = "CCTV"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Name = "Security"
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.Workplace", b =>
@@ -247,6 +358,24 @@ namespace Heliondata.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Workplaces");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Address = "123 5th Ave",
+                            City = "New York",
+                            Name = "Headquarters",
+                            Zone = "Downtown"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Address = "456 7th Ave",
+                            City = "New York",
+                            Name = "Branch Office",
+                            Zone = "Uptown"
+                        });
                 });
 
             modelBuilder.Entity("Heliondata.Models.JoinModels.EmployeeProcess", b =>
@@ -325,9 +454,13 @@ namespace Heliondata.Migrations
 
             modelBuilder.Entity("Heliondata.Models.Representative", b =>
                 {
-                    b.HasOne("Heliondata.Models.Company", null)
+                    b.HasOne("Heliondata.Models.Company", "Company")
                         .WithMany("Representatives")
-                        .HasForeignKey("CompanyID");
+                        .HasForeignKey("CompanyID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Heliondata.Models.Company", b =>

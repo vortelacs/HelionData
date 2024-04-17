@@ -1,14 +1,15 @@
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using Heliondata.Data;
 
 namespace Heliondata.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
 
-        private readonly DbContext _dbContext;
+        private readonly HelionDBContext _dbContext;
         protected DbSet<T> _dbSet;
 
-        public GenericRepository(DbContext dbContext)
+        public GenericRepository(HelionDBContext dbContext)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<T>();

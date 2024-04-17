@@ -1,6 +1,9 @@
 using Heliondata.Models;
 using Heliondata.Models.DTO;
+using Heliondata.Models.JoinModels;
 using Heliondata.Repositories;
+using Microsoft.IdentityModel.Tokens;
+using ProcessServiceModel = Heliondata.Models.JoinModels.ProcessService;
 
 namespace Heliondata.Services
 {
@@ -12,6 +15,9 @@ namespace Heliondata.Services
         IGenericRepository<Employee> _employeeRepository;
         IGenericRepository<Workplace> _workplaceRepository;
         IGenericRepository<Service> _serviceRepository;
+        IGenericRepository<EmployeeProcess> _employeeProcessRepository;
+        IGenericRepository<ProcessServiceModel> _processServiceRepository;
+        IGenericRepository<ProcessWorkplace> _processWorkplaceRepository;
 
         public ProcessService(
             IGenericRepository<Process> processRepository,
@@ -19,7 +25,10 @@ namespace Heliondata.Services
             IGenericRepository<Employee> employeeRepository,
             IGenericRepository<Representative> representativeRepository,
             IGenericRepository<Workplace> workplaceRepository,
-            IGenericRepository<Service> serviceRepository)
+            IGenericRepository<Service> serviceRepository,
+            IGenericRepository<EmployeeProcess> employeeProcessRepository,
+            IGenericRepository<ProcessServiceModel> processServiceRepository,
+            IGenericRepository<ProcessWorkplace> processWorkplaceRepository)
         {
             _processRepository = processRepository;
             _companyRepository = companyRepository;
@@ -27,6 +36,9 @@ namespace Heliondata.Services
             _workplaceRepository = workplaceRepository;
             _employeeRepository = employeeRepository;
             _serviceRepository = serviceRepository;
+            _employeeProcessRepository = employeeProcessRepository;
+            _processServiceRepository = processServiceRepository;
+            _processWorkplaceRepository = processWorkplaceRepository;
         }
 
         public Process GetProcess(int ID)
@@ -34,13 +46,15 @@ namespace Heliondata.Services
             return _processRepository.GetByID(ID);
         }
 
-        public List<Process> GetAllProcess()
+        public List<ProcessInfoDTO> GetAllProcess()
         {
-            return (List<Process>)_processRepository.GetAll();
+            var processes = _processRepository.GetAll();
+            var processInfoDTOs = processes.Select(MapProcessToProcessInfoDTO).ToList();
+            return processInfoDTOs;
         }
 
 
-        public async Task<Process> SaveProcess(ProcessDTO processDTO)
+        public async Task<Process> SaveProcess(ProcessCreateRequestDTO processDTO)
         {
             Process process = MapDTOToProcessAsync(processDTO);
             process = _processRepository.Add(process).Result;
@@ -49,7 +63,7 @@ namespace Heliondata.Services
         }
 
 
-        public Process MapDTOToProcessAsync(ProcessDTO processDTO)
+        public Process MapDTOToProcessAsync(ProcessCreateRequestDTO processDTO)
         {
             var process = new Process
             {
@@ -76,47 +90,85 @@ namespace Heliondata.Services
         }
 
 
-        public async Task CreateAndSaveJoinModelEntities(Process process, ProcessDTO processDTO)
+        public async Task CreateAndSaveJoinModelEntities(Process process, ProcessCreateRequestDTO processDTO)
         {
-            // if (processDTO.EmployeeProcessIds != null)
-            // {
-            //     List<Employee> employees = new List<Employee>();
+            if (!processDTO.EmployeeIds.IsNullOrEmpty() && process != null)
+            {
+                List<Employee> employees = new List<Employee>();
 
-            //     processDTO.EmployeeProcessIds.ForEach(employeeId =>
-            //     employees.Add(_employeeRepository.GetByID(employeeId))
-            //     );
+                processDTO.EmployeeIds.ForEach(employeeId =>
+                employees.Add(_employeeRepository.GetByID(employeeId))
+                );
 
-            //     foreach (var employee in employees)
-            //     {
-            //         var employeeProcess = new Models.JoinModels.EmployeeProcess();
-            //         employeeProcess.EmployeeId = employee.ID;
-            //         employeeProcess.ProcessId = process.ID;
-            //         if (employeeProcess == null)
-            //         {
-            //             throw new Exception($"EmployeeProcess with ID {employeeProcessId} not found.");
-            //         }
-            //         process.EmployeeProcesses.Add(employeeProcess);
-            //     }
-            //     process.EmployeeProcesses = new List<EmployeeProcess>();
-            // }
+                foreach (var employee in employees)
+                {
+                    var employeeProcess = new EmployeeProcess
+                    {
+                        EmployeeId = employee.ID,
+                        ProcessId = process.ID
+                    };
+                    await _employeeProcessRepository.Add(employeeProcess);
+                }
+            }
+            if (!processDTO.ServiceIds.IsNullOrEmpty())
+            {
+                List<Service> services = new List<Service>();
 
-            // if (processDTO.ProcessServiceIds != null)
-            // {
-            //     process.ProcessServices = new List<ProcessService>();
-            //     foreach (var processServiceId in processDTO.ProcessServiceIds)
-            //     {
-            //         var processService = _processServiceRepository.GetByID(processServiceId);
-            //         if (processService == null)
-            //         {
-            //             // Handle the case where ProcessService is not found
-            //             throw new Exception($"ProcessService with ID {processServiceId} not found.");
-            //         }
-            //         process.ProcessServices.Add(processService);
-            //     }
-            // }
+                processDTO.ServiceIds.ForEach(serviceId =>
+                    services.Add(_serviceRepository.GetByID(serviceId))
+                );
+
+                foreach (var service in services)
+                {
+                    var processService = new ProcessServiceModel
+                    {
+                        ServiceId = service.ID,
+                        ProcessId = process.ID
+                    };
+                    await _processServiceRepository.Add(processService);
+                }
+            }
+
+            if (!processDTO.WorkplacesIds.IsNullOrEmpty())
+            {
+                List<Workplace> workplaces = new List<Workplace>();
+
+                processDTO.ServiceIds.ForEach(workplaceId =>
+                    workplaces.Add(_workplaceRepository.GetByID(workplaceId))
+                );
+
+                foreach (var workplace in workplaces)
+                {
+                    var processWorkplace = new ProcessWorkplace
+                    {
+                        WorkplaceId = workplace.ID,
+                        ProcessId = process.ID
+                    };
+                    await _processWorkplaceRepository.Add(processWorkplace);
+                }
+            }
 
         }
 
+        public ProcessInfoDTO MapProcessToProcessInfoDTO(Process process)
+        {
+            var processInfoDTO = new ProcessInfoDTO
+            {
+                ID = process.ID,
+                SignDate = process.SignDate,
+                CompanyName = process.Company?.Name,
+                RepresentativeId = process.RepresentativeId,
+                ESignature = process.ESignature,
+                GPSLocation = process.GPSLocation,
+                EmployeeNames = process.EmployeeProcesses?.Select(ep => ep.Employee?.FirstName + " " + ep.Employee?.LastName).ToList(),
+                ServiceNames = process.ProcessServices?.Select(ps => ps.Service?.Name).ToList(),
+                Workplace = process.ProcessWorkplaces?
+                        .ToDictionary(pw => pw.Workplace?.Name, pw => pw.Workplace?.Zone + " " + pw.Workplace?.City + " " + pw.Workplace?.Address)
+            };
 
+            return processInfoDTO;
+        }
     }
+
+
 }

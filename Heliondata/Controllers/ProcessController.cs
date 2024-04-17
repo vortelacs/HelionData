@@ -8,7 +8,6 @@ using ProcessServ = Heliondata.Services.ProcessService;
 namespace Heliondata.Controllers
 {
     [ApiController]
-    [Route("process")]
     public class ProcessController : ControllerBase
     {
 
@@ -20,10 +19,10 @@ namespace Heliondata.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("process")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Process>> SaveProcess(ProcessDTO processDTO)
+        public async Task<ActionResult<Process>> SaveProcess(ProcessCreateRequestDTO processDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -42,7 +41,7 @@ namespace Heliondata.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("process/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Process>> GetProcessById(int id)
@@ -58,12 +57,12 @@ namespace Heliondata.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("processes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<Process>>> GetAllProcess()
+        public async Task<ActionResult<List<ProcessInfoDTO>>> GetAllProcesses()
         {
-            List<Process> process = _processService.GetAllProcess();
+            List<ProcessInfoDTO> process = _processService.GetAllProcess();
 
             if (process == null)
             {

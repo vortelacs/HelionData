@@ -9,6 +9,6 @@ namespace Heliondata.Models
         public int CUI { get; set; }
         public String Name { get; set; }
 
-        public List<Representative> Representatives { get; set; }
+        public virtual List<Representative> Representatives { get; set; }
     }
 }

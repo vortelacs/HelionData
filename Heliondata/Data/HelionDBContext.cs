@@ -1,26 +1,12 @@
 using Heliondata.Models;
+using Heliondata.Models.JoinModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Heliondata.Data
 {
     public class HelionDBContext : DbContext
     {
-        // private HelionDBContext()
-        // {
-        // }
-
-        // private readonly IConfiguration _configuration;
-        // public HelionDBContext(IConfiguration configuration) : this()
-        // {
-        //     _configuration = configuration;
-        // }
         public HelionDBContext(DbContextOptions<HelionDBContext> options) : base(options) { }
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     // string connectionString = _configuration.GetConnectionString("MySqlConnection");
-        //     // optionsBuilder.UseSqlServer(connectionString);
-        // }
-
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -29,135 +15,58 @@ namespace Heliondata.Data
         public DbSet<Service> Services { get; set; }
         public DbSet<Process> Processes { get; set; }
 
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Representative>().HasData(
-            new Representative { ID = 1, FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Position = "Manager" },
-            new Representative { ID = 2, FirstName = "Alice", LastName = "Smith", Email = "alice.smith@example.com", Position = "Supervisor" },
-            new Representative { ID = 3, FirstName = "Bob", LastName = "Johnson", Email = "bob.johnson@example.com", Position = "Director" },
-            new Representative { ID = 4, FirstName = "Emma", LastName = "Brown", Email = "emma.brown@example.com", Position = "Coordinator" }
+            modelBuilder.Entity<Service>().HasData(
+            new Service { ID = 1, Name = "CCTV" },
+            new Service { ID = 2, Name = "Security" }
+            );
 
-
-        // Add more representatives as needed
-        );
+            modelBuilder.Entity<Workplace>().HasData(
+            new Workplace { ID = 1, Name = "Headquarters", Zone = "Downtown", City = "New York", Address = "123 5th Ave" },
+            new Workplace { ID = 2, Name = "Branch Office", Zone = "Uptown", City = "New York", Address = "456 7th Ave" }
+            );
 
             modelBuilder.Entity<Company>().HasData(
-        new Company
-        {
-            ID = 1,
-            CUI = 123456789,
-            Name = "Company A",
-            Representatives = new List<Representative>
-            {
-                new Representative { ID = 1, FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Position = "Manager" }
-            }
-        },
-        new Company
-        {
-            ID = 2,
-            CUI = 987654321,
-            Name = "Company B",
-            Representatives = new List<Representative>
-            {
-                new Representative { ID = 4, FirstName = "Emma", LastName = "Brown", Email = "emma.brown@example.com", Position = "Coordinator" }
-            }
+                new Company { ID = 1, CUI = 123456789, Name = "Company A" },
+                new Company { ID = 2, CUI = 987654321, Name = "Company B" }
+            );
+
+            modelBuilder.Entity<Representative>().HasData(
+                new Representative { ID = 1, FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Position = "Manager", CompanyID = 1 },
+                new Representative { ID = 2, FirstName = "Alice", LastName = "Smith", Email = "alice.smith@example.com", Position = "Supervisor", CompanyID = 1 },
+                new Representative { ID = 3, FirstName = "Bob", LastName = "Johnson", Email = "bob.johnson@example.com", Position = "Director", CompanyID = 2 },
+                new Representative { ID = 4, FirstName = "Emma", LastName = "Brown", Email = "emma.brown@example.com", Position = "Coordinator", CompanyID = 2 }
+            );
+
+            modelBuilder.Entity<Employee>().HasData(
+            new Employee { ID = 1, FirstName = "Sam", LastName = "Wilson", Position = "Analyst" },
+            new Employee { ID = 2, FirstName = "Lucy", LastName = "Hart", Position = "Manager" }
+            );
+
+            modelBuilder.Entity<Process>().HasData(
+                new Process { ID = 1, SignDate = DateTime.Parse("2024-04-01"), RepresentativeId = 1, ESignature = "Signature1", GPSLocation = "Location1" },
+                new Process { ID = 2, SignDate = DateTime.Parse("2024-04-02"), RepresentativeId = 2, ESignature = "Signature2", GPSLocation = "Location2" }
+            );
+
+            modelBuilder.Entity<EmployeeProcess>().HasData(
+            new EmployeeProcess { ID = 1, EmployeeId = 1, ProcessId = 1 },
+            new EmployeeProcess { ID = 2, EmployeeId = 2, ProcessId = 2 }
+            );
+            modelBuilder.Entity<ProcessService>().HasData(
+            new ProcessService { ID = 1, ServiceId = 1, ProcessId = 1 },
+            new ProcessService { ID = 2, ServiceId = 2, ProcessId = 2 }
+            );
+
+            modelBuilder.Entity<ProcessWorkplace>().HasData(
+            new ProcessWorkplace { ID = 1, WorkplaceId = 1, ProcessId = 1 },
+            new ProcessWorkplace { ID = 2, WorkplaceId = 2, ProcessId = 2 }
+            );
         }
-        // Add more companies as needed
-        );
-
-            // modelBuilder.Entity<Company>(entity =>
-            // {
-            //     entity.HasKey(e => e.ID);
-            //     entity.Property(e => e.Name).IsRequired();
-            // });
-
-            // modelBuilder.Entity<Employee>(entity =>
-            // {
-            //     entity.HasKey(e => e.ID);
-            //     entity.Property(e => e.FirstName).IsRequired();
-            //     entity.Property(d => d.LastName).IsRequired();
-            //     entity.Property(d => d.Position).IsRequired();
-            // });
-
-            // modelBuilder.Entity<Representative>(entity =>
-            // {
-            //     entity.HasKey(e => e.ID);
-            //     entity.Property(e => e.FirstName).IsRequired();
-            //     entity.Property(d => d.LastName).IsRequired();
-            //     entity.Property(d => d.Position).IsRequired();
-            //     entity.Property(d => d.Email).IsRequired();
-            // });
-
-            // modelBuilder.Entity<Service>(entity =>
-            // {
-            //     entity.HasKey(e => e.ID);
-            //     entity.Property(e => e.Name).IsRequired();
-            // });
-            // modelBuilder.Entity<Workplace>(entity =>
-            // {
-            //     entity.HasKey(e => e.ID);
-            //     entity.Property(e => e.Name).IsRequired();
-            //     entity.Property(d => d.Zone).IsRequired();
-            //     entity.Property(d => d.City).IsRequired();
-            //     entity.Property(d => d.Address).IsRequired();
-            // });
-
-            // modelBuilder.Entity<Process>(entity =>
-            // {
-            //     entity.HasKey(e => e.ID);
-            //     entity.HasOne(e => e.Company);
-            //     entity.HasMany(d => d.EmployeeProcesses)
-            //         .WithOne(ep => ep.Process)
-            //         .IsRequired();
-            //     entity.HasOne(d => d.Representative).WithMany().HasForeignKey(e => e.RepresentativeId);
-            //     entity.HasMany(d => d.ProcessServices)
-            //         .WithOne(ps => ps.Process)
-            //         .IsRequired();
-            //     entity.Property(d => d.SignDate).IsRequired();
-            //     entity.Property(d => d.ESignature).IsRequired();
-            //     entity.Property(d => d.GPSLocation).IsRequired();
-            //     entity.Property(d => d.ProcessWorkplaces).IsRequired();
-            // });
 
 
-            // modelBuilder.Entity<EmployeeProcess>(entity =>
-            // {
-            //     entity.HasKey(ps => ps.ID);
-            //     entity.HasOne(ps => ps.Employee)
-            //         .WithMany(p => p.EmployeeProcesses)
-            //         .HasForeignKey(ps => ps.EmployeeId);
-            //     entity.HasOne(ps => ps.Process)
-            //         .WithMany(ps => ps.EmployeeProcesses)
-            //         .HasForeignKey(ps => ps.ProcessId);
-            // });
 
-            // modelBuilder.Entity<ProcessService>(entity =>
-            // {
-            //     entity.HasKey(ps => ps.ID);
-            //     entity.HasOne(ps => ps.Process)
-            //         .WithMany(p => p.ProcessServices)
-            //         .HasForeignKey(ps => ps.ProcessId);
-            //     entity.HasOne(ps => ps.Service)
-            //         .WithMany()
-            //         .HasForeignKey(ps => ps.ServiceId);
-            // });
-
-
-            // modelBuilder.Entity<ProcessWorkplace>(entity =>
-            // {
-            //     entity.HasKey(ps => ps.ID);
-            //     entity.HasOne(ps => ps.Process)
-            //         .WithMany()
-            //         .HasForeignKey(ps => ps.Process);
-            //     entity.HasOne(ps => ps.Workplace)
-            //         .WithMany()
-            //         .HasForeignKey(ps => ps.Workplace);
-            // });
-
-        }
     }
 }

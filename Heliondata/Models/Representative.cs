@@ -6,11 +6,13 @@ namespace Heliondata.Models
     {
         [Key]
         public int ID { get; set; }
-        public String FirstName { get; set; }
-        public String LastName { get; set; }
-        public String Email { get; set; }
-        public String Position { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Position { get; set; }
+        public int CompanyID { get; set; }
 
-        public List<Process> Processes { get; set; }
+        public virtual Company Company { get; set; }
+        public virtual List<Process> Processes { get; set; }
     }
 }

@@ -89,7 +89,7 @@ namespace Heliondata.Migrations
                     LastName = table.Column<string>(type: "longtext", nullable: true),
                     Email = table.Column<string>(type: "longtext", nullable: true),
                     Position = table.Column<string>(type: "longtext", nullable: true),
-                    CompanyID = table.Column<int>(type: "int", nullable: true)
+                    CompanyID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +98,8 @@ namespace Heliondata.Migrations
                         name: "FK_Representatives_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -222,12 +223,77 @@ namespace Heliondata.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Employees",
+                columns: new[] { "ID", "FirstName", "LastName", "Position" },
+                values: new object[,]
+                {
+                    { 1, "Sam", "Wilson", "Analyst" },
+                    { 2, "Lucy", "Hart", "Manager" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Services",
+                columns: new[] { "ID", "Name" },
+                values: new object[,]
+                {
+                    { 1, "CCTV" },
+                    { 2, "Security" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Workplaces",
+                columns: new[] { "ID", "Address", "City", "Name", "Zone" },
+                values: new object[,]
+                {
+                    { 1, "123 5th Ave", "New York", "Headquarters", "Downtown" },
+                    { 2, "456 7th Ave", "New York", "Branch Office", "Uptown" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Representatives",
                 columns: new[] { "ID", "CompanyID", "Email", "FirstName", "LastName", "Position" },
                 values: new object[,]
                 {
-                    { 1, null, "john.doe@example.com", "John", "Doe", "Manager" },
-                    { 2, null, "alice.smith@example.com", "Alice", "Smith", "Supervisor" }
+                    { 1, 1, "john.doe@example.com", "John", "Doe", "Manager" },
+                    { 2, 1, "alice.smith@example.com", "Alice", "Smith", "Supervisor" },
+                    { 3, 2, "bob.johnson@example.com", "Bob", "Johnson", "Director" },
+                    { 4, 2, "emma.brown@example.com", "Emma", "Brown", "Coordinator" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Processes",
+                columns: new[] { "ID", "CompanyID", "ESignature", "GPSLocation", "RepresentativeId", "SignDate" },
+                values: new object[,]
+                {
+                    { 1, null, "Signature1", "Location1", 1, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, null, "Signature2", "Location2", 2, new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "EmployeeProcess",
+                columns: new[] { "ID", "EmployeeId", "ProcessId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1 },
+                    { 2, 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProcessService",
+                columns: new[] { "ID", "ProcessId", "ServiceId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1 },
+                    { 2, 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProcessWorkplace",
+                columns: new[] { "ID", "ProcessId", "WorkplaceId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1 },
+                    { 2, 2, 2 }
                 });
 
             migrationBuilder.CreateIndex(

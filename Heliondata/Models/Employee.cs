@@ -11,6 +11,6 @@ namespace Heliondata.Models
         public String FirstName { get; set; }
         public String Position { get; set; }
 
-        public List<EmployeeProcess> EmployeeProcesses { get; set; }
+        public virtual List<EmployeeProcess> EmployeeProcesses { get; set; }
     }
 }
