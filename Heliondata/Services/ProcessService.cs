@@ -1,6 +1,7 @@
 using Heliondata.Models;
 using Heliondata.Models.DTO;
 using Heliondata.Models.JoinModels;
+using Heliondata.Models.Mappers;
 using Heliondata.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using ProcessServiceModel = Heliondata.Models.JoinModels.ProcessService;
@@ -49,26 +50,32 @@ namespace Heliondata.Services
         public List<ProcessInfoDTO> GetAllProcess()
         {
             var processes = _processRepository.GetAll();
-            var processInfoDTOs = processes.Select(MapProcessToProcessInfoDTO).ToList();
+            var processInfoDTOs = processes.Select(ProcessMapper.MapProcessToProcessInfoDTO).ToList();
             return processInfoDTOs;
         }
 
 
         public async Task<Process> SaveProcess(ProcessCreateRequestDTO processDTO)
         {
-            Process process = MapDTOToProcessAsync(processDTO);
+            Process process = MapDTOToProcess(processDTO);
             process = _processRepository.Add(process).Result;
             await CreateAndSaveJoinModelEntities(process, processDTO);
             return process;
         }
 
 
-        public Process MapDTOToProcessAsync(ProcessCreateRequestDTO processDTO)
+        public Process MapDTOToProcess(ProcessCreateRequestDTO processDTO)
         {
+
+
+            string dataUrl = processDTO.ESignature;
+            string base64Data = dataUrl.Split(',')[1];
+            byte[] imageData = Convert.FromBase64String(base64Data);
+
             var process = new Process
             {
                 SignDate = processDTO.SignDate,
-                ESignature = processDTO.ESignature,
+                ESignature = imageData,
                 GPSLocation = processDTO.GPSLocation
             };
 
@@ -150,24 +157,7 @@ namespace Heliondata.Services
 
         }
 
-        public ProcessInfoDTO MapProcessToProcessInfoDTO(Process process)
-        {
-            var processInfoDTO = new ProcessInfoDTO
-            {
-                ID = process.ID,
-                SignDate = process.SignDate,
-                CompanyName = process.Company?.Name,
-                RepresentativeId = process.RepresentativeId,
-                ESignature = process.ESignature,
-                GPSLocation = process.GPSLocation,
-                EmployeeNames = process.EmployeeProcesses?.Select(ep => ep.Employee?.FirstName + " " + ep.Employee?.LastName).ToList(),
-                ServiceNames = process.ProcessServices?.Select(ps => ps.Service?.Name).ToList(),
-                Workplace = process.ProcessWorkplaces?
-                        .ToDictionary(pw => pw.Workplace?.Name, pw => pw.Workplace?.Zone + " " + pw.Workplace?.City + " " + pw.Workplace?.Address)
-            };
 
-            return processInfoDTO;
-        }
     }
 
 

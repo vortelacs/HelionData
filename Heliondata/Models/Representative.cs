@@ -2,10 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Heliondata.Models
 {
-    public class Representative
+    public class Representative : BaseModel
     {
-        [Key]
-        public int ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

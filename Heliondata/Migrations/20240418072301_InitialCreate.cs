@@ -112,7 +112,7 @@ namespace Heliondata.Migrations
                     SignDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CompanyID = table.Column<int>(type: "int", nullable: true),
                     RepresentativeId = table.Column<int>(type: "int", nullable: false),
-                    ESignature = table.Column<string>(type: "longtext", nullable: true),
+                    ESignature = table.Column<byte[]>(type: "longblob", nullable: true),
                     GPSLocation = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
@@ -265,8 +265,8 @@ namespace Heliondata.Migrations
                 columns: new[] { "ID", "CompanyID", "ESignature", "GPSLocation", "RepresentativeId", "SignDate" },
                 values: new object[,]
                 {
-                    { 1, null, "Signature1", "Location1", 1, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, null, "Signature2", "Location2", 2, new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, null, new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 }, "Location1", 1, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, null, new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 }, "Location2", 2, new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(

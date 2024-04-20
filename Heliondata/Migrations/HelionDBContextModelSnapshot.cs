@@ -203,8 +203,8 @@ namespace Heliondata.Migrations
                     b.Property<int?>("CompanyID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ESignature")
-                        .HasColumnType("longtext");
+                    b.Property<byte[]>("ESignature")
+                        .HasColumnType("longblob");
 
                     b.Property<string>("GPSLocation")
                         .HasColumnType("longtext");
@@ -227,7 +227,7 @@ namespace Heliondata.Migrations
                         new
                         {
                             ID = 1,
-                            ESignature = "Signature1",
+                            ESignature = new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 },
                             GPSLocation = "Location1",
                             RepresentativeId = 1,
                             SignDate = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -235,7 +235,7 @@ namespace Heliondata.Migrations
                         new
                         {
                             ID = 2,
-                            ESignature = "Signature2",
+                            ESignature = new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 },
                             GPSLocation = "Location2",
                             RepresentativeId = 2,
                             SignDate = new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)

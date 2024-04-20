@@ -2,7 +2,6 @@ namespace Heliondata.Models.DTO
 {
     public class ProcessCreateRequestDTO
     {
-        public int ID { get; set; }
         public DateTime SignDate { get; set; }
         public int CompanyId { get; set; }
         public int RepresentativeId { get; set; }

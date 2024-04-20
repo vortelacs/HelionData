@@ -4,10 +4,8 @@ using Heliondata.Models.JoinModels;
 
 namespace Heliondata.Models
 {
-    public class Process
+    public class Process : BaseModel
     {
-        [Key]
-        public int ID { get; set; }
         public DateTime SignDate { get; set; }
         public virtual Company Company { get; set; }
         public virtual List<ProcessWorkplace> ProcessWorkplaces { get; set; }
@@ -18,7 +16,7 @@ namespace Heliondata.Models
         public virtual List<EmployeeProcess> EmployeeProcesses { get; set; }
         public virtual List<ProcessService> ProcessServices { get; set; }
 
-        public String ESignature { get; set; }
+        public byte[] ESignature { get; set; }
         public String GPSLocation { get; set; }
 
     }

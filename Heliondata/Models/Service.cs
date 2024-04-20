@@ -2,10 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Heliondata.Models
 {
-    public class Service
+    public class Service : BaseModel
     {
-        [Key]
-        public int ID { get; set; }
         public String Name { get; set; }
     }
 }
