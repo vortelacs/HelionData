@@ -10,6 +10,7 @@ namespace Heliondata.Services
 {
     public class ProcessService
     {
+        private readonly ILogger<ProcessService> _logger;
         IGenericRepository<Process> _processRepository;
         IGenericRepository<Company> _companyRepository;
         IGenericRepository<Representative> _representativeRepository;
@@ -29,7 +30,8 @@ namespace Heliondata.Services
             IGenericRepository<Service> serviceRepository,
             IGenericRepository<EmployeeProcess> employeeProcessRepository,
             IGenericRepository<ProcessServiceModel> processServiceRepository,
-            IGenericRepository<ProcessWorkplace> processWorkplaceRepository)
+            IGenericRepository<ProcessWorkplace> processWorkplaceRepository,
+            ILogger<ProcessService> logger)
         {
             _processRepository = processRepository;
             _companyRepository = companyRepository;
@@ -40,6 +42,7 @@ namespace Heliondata.Services
             _employeeProcessRepository = employeeProcessRepository;
             _processServiceRepository = processServiceRepository;
             _processWorkplaceRepository = processWorkplaceRepository;
+            _logger = logger;
         }
 
         public Process GetProcess(int ID)
@@ -66,8 +69,6 @@ namespace Heliondata.Services
 
         public Process MapDTOToProcess(ProcessCreateRequestDTO processDTO)
         {
-
-
             string dataUrl = processDTO.ESignature;
             string base64Data = dataUrl.Split(',')[1];
             byte[] imageData = Convert.FromBase64String(base64Data);
@@ -76,60 +77,47 @@ namespace Heliondata.Services
             {
                 SignDate = processDTO.SignDate,
                 ESignature = imageData,
-                GPSLocation = processDTO.GPSLocation
+                GPSLocation = processDTO.GPSLocation,
+                CompanyId = processDTO.CompanyId,
+                RepresentativeId = processDTO.RepresentativeId
             };
 
-            var company = _companyRepository.GetByID(processDTO.CompanyId);
-            if (company == null)
-            {
-                throw new Exception($"Company with ID {processDTO.CompanyId} not found.");
-            }
-            process.Company = company;
-
-            var representative = _representativeRepository.GetByID(processDTO.RepresentativeId);
-            if (representative == null)
-            {
-                throw new Exception($"Representative with ID {processDTO.RepresentativeId} not found.");
-            }
-            process.Representative = representative;
+            // // Verify the existence of the company and representative without loading them
+            // if (!_companyRepository.Exists(processDTO.CompanyId))
+            // {
+            //     throw new Exception($"Company with ID {processDTO.CompanyId} not found.");
+            // }
+            // if (!_representativeRepository.Exists(processDTO.RepresentativeId))
+            // {
+            //     throw new Exception($"Representative with ID {processDTO.RepresentativeId} not found.");
+            // }
 
             return process;
         }
-
 
         public async Task CreateAndSaveJoinModelEntities(Process process, ProcessCreateRequestDTO processDTO)
         {
             if (!processDTO.EmployeeIds.IsNullOrEmpty() && process != null)
             {
-                List<Employee> employees = new List<Employee>();
-
-                processDTO.EmployeeIds.ForEach(employeeId =>
-                employees.Add(_employeeRepository.GetByID(employeeId))
-                );
-
-                foreach (var employee in employees)
+                foreach (var employeeId in processDTO.EmployeeIds)
                 {
                     var employeeProcess = new EmployeeProcess
                     {
-                        EmployeeId = employee.ID,
+                        EmployeeId = employeeId,
                         ProcessId = process.ID
                     };
                     await _employeeProcessRepository.Add(employeeProcess);
                 }
             }
+
+
             if (!processDTO.ServiceIds.IsNullOrEmpty())
             {
-                List<Service> services = new List<Service>();
-
-                processDTO.ServiceIds.ForEach(serviceId =>
-                    services.Add(_serviceRepository.GetByID(serviceId))
-                );
-
-                foreach (var service in services)
+                foreach (var serviceId in processDTO.ServiceIds)
                 {
                     var processService = new ProcessServiceModel
                     {
-                        ServiceId = service.ID,
+                        ServiceId = serviceId,
                         ProcessId = process.ID
                     };
                     await _processServiceRepository.Add(processService);
@@ -138,23 +126,16 @@ namespace Heliondata.Services
 
             if (!processDTO.WorkplacesIds.IsNullOrEmpty())
             {
-                List<Workplace> workplaces = new List<Workplace>();
-
-                processDTO.ServiceIds.ForEach(workplaceId =>
-                    workplaces.Add(_workplaceRepository.GetByID(workplaceId))
-                );
-
-                foreach (var workplace in workplaces)
+                foreach (var workplaceId in processDTO.WorkplacesIds)
                 {
                     var processWorkplace = new ProcessWorkplace
                     {
-                        WorkplaceId = workplace.ID,
+                        WorkplaceId = workplaceId,
                         ProcessId = process.ID
                     };
                     await _processWorkplaceRepository.Add(processWorkplace);
                 }
             }
-
         }
 
 

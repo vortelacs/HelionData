@@ -47,8 +47,8 @@ namespace Heliondata.Data
             );
 
             modelBuilder.Entity<Process>().HasData(
-                new Process { ID = 1, SignDate = DateTime.Parse("2024-04-01"), RepresentativeId = 1, ESignature = Convert.FromBase64String("U2lnbmF0dXJlMURhdGE="), GPSLocation = "Location1" },
-                new Process { ID = 2, SignDate = DateTime.Parse("2024-04-02"), RepresentativeId = 2, ESignature = Convert.FromBase64String("U2lnbmF0dXJlMURhdGE="), GPSLocation = "Location2" }
+                new Process { ID = 1, CompanyId = 1, SignDate = DateTime.Parse("2024-04-01"), RepresentativeId = 1, ESignature = Convert.FromBase64String("U2lnbmF0dXJlMURhdGE="), GPSLocation = "47.0428222 21.9190659" },
+                new Process { ID = 2, CompanyId = 2, SignDate = DateTime.Parse("2024-04-02"), RepresentativeId = 2, ESignature = Convert.FromBase64String("U2lnbmF0dXJlMURhdGE="), GPSLocation = "27.1433222 32.9123659" }
             );
 
             modelBuilder.Entity<EmployeeProcess>().HasData(

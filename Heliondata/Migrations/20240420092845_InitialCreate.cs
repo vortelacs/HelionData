@@ -110,7 +110,7 @@ namespace Heliondata.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     SignDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CompanyID = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
                     RepresentativeId = table.Column<int>(type: "int", nullable: false),
                     ESignature = table.Column<byte[]>(type: "longblob", nullable: true),
                     GPSLocation = table.Column<string>(type: "longtext", nullable: true)
@@ -119,10 +119,11 @@ namespace Heliondata.Migrations
                 {
                     table.PrimaryKey("PK_Processes", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Processes_Companies_CompanyID",
-                        column: x => x.CompanyID,
+                        name: "FK_Processes_Companies_CompanyId",
+                        column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Processes_Representatives_RepresentativeId",
                         column: x => x.RepresentativeId,
@@ -262,11 +263,11 @@ namespace Heliondata.Migrations
 
             migrationBuilder.InsertData(
                 table: "Processes",
-                columns: new[] { "ID", "CompanyID", "ESignature", "GPSLocation", "RepresentativeId", "SignDate" },
+                columns: new[] { "ID", "CompanyId", "ESignature", "GPSLocation", "RepresentativeId", "SignDate" },
                 values: new object[,]
                 {
-                    { 1, null, new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 }, "Location1", 1, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, null, new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 }, "Location2", 2, new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 1, new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 }, "47.0428222 21.9190659", 1, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 }, "27.1433222 32.9123659", 2, new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -307,9 +308,9 @@ namespace Heliondata.Migrations
                 column: "ProcessId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_CompanyID",
+                name: "IX_Processes_CompanyId",
                 table: "Processes",
-                column: "CompanyID");
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Processes_RepresentativeId",

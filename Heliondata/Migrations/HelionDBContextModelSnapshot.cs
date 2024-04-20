@@ -200,7 +200,7 @@ namespace Heliondata.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyID")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("ESignature")
@@ -217,7 +217,7 @@ namespace Heliondata.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CompanyID");
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("RepresentativeId");
 
@@ -227,16 +227,18 @@ namespace Heliondata.Migrations
                         new
                         {
                             ID = 1,
+                            CompanyId = 1,
                             ESignature = new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 },
-                            GPSLocation = "Location1",
+                            GPSLocation = "47.0428222 21.9190659",
                             RepresentativeId = 1,
                             SignDate = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             ID = 2,
+                            CompanyId = 2,
                             ESignature = new byte[] { 83, 105, 103, 110, 97, 116, 117, 114, 101, 49, 68, 97, 116, 97 },
-                            GPSLocation = "Location2",
+                            GPSLocation = "27.1433222 32.9123659",
                             RepresentativeId = 2,
                             SignDate = new DateTime(2024, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
@@ -436,7 +438,9 @@ namespace Heliondata.Migrations
                 {
                     b.HasOne("Heliondata.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyID");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Heliondata.Models.Representative", "Representative")
                         .WithMany("Processes")

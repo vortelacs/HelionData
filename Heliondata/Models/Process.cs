@@ -7,6 +7,7 @@ namespace Heliondata.Models
     public class Process : BaseModel
     {
         public DateTime SignDate { get; set; }
+        public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
         public virtual List<ProcessWorkplace> ProcessWorkplaces { get; set; }
 
