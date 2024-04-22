@@ -17,7 +17,7 @@ namespace Heliondata.Repositories
 
         public async Task<T> Add(T entity)
         {
-            _dbSet.Attach(entity);
+            _dbSet.Add(entity);
             await _dbContext.SaveChangesAsync();
             return entity;
         }

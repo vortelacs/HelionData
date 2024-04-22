@@ -24,7 +24,11 @@ namespace Heliondata.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     CUI = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: true)
+                    Name = table.Column<string>(type: "longtext", nullable: true),
+                    Discriminator = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false),
+                    CNP = table.Column<int>(type: "int", nullable: true),
+                    Activity = table.Column<string>(type: "longtext", nullable: true),
+                    RegistrationCode = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -134,7 +138,7 @@ namespace Heliondata.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "EmployeeProcess",
+                name: "EmployeeProcesses",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -144,15 +148,15 @@ namespace Heliondata.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeProcess", x => x.ID);
+                    table.PrimaryKey("PK_EmployeeProcesses", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_EmployeeProcess_Employees_EmployeeId",
+                        name: "FK_EmployeeProcesses_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EmployeeProcess_Processes_ProcessId",
+                        name: "FK_EmployeeProcesses_Processes_ProcessId",
                         column: x => x.ProcessId,
                         principalTable: "Processes",
                         principalColumn: "ID",
@@ -161,7 +165,7 @@ namespace Heliondata.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ProcessService",
+                name: "ProcessServices",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -171,15 +175,15 @@ namespace Heliondata.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProcessService", x => x.ID);
+                    table.PrimaryKey("PK_ProcessServices", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ProcessService_Processes_ProcessId",
+                        name: "FK_ProcessServices_Processes_ProcessId",
                         column: x => x.ProcessId,
                         principalTable: "Processes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProcessService_Services_ServiceId",
+                        name: "FK_ProcessServices_Services_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Services",
                         principalColumn: "ID",
@@ -188,7 +192,7 @@ namespace Heliondata.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ProcessWorkplace",
+                name: "ProcessWorkplaces",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -198,15 +202,15 @@ namespace Heliondata.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProcessWorkplace", x => x.ID);
+                    table.PrimaryKey("PK_ProcessWorkplaces", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ProcessWorkplace_Processes_ProcessId",
+                        name: "FK_ProcessWorkplaces_Processes_ProcessId",
                         column: x => x.ProcessId,
                         principalTable: "Processes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProcessWorkplace_Workplaces_WorkplaceId",
+                        name: "FK_ProcessWorkplaces_Workplaces_WorkplaceId",
                         column: x => x.WorkplaceId,
                         principalTable: "Workplaces",
                         principalColumn: "ID",
@@ -216,12 +220,22 @@ namespace Heliondata.Migrations
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "ID", "CUI", "Name" },
+                columns: new[] { "ID", "CUI", "Discriminator", "Name" },
                 values: new object[,]
                 {
-                    { 1, 123456789, "Company A" },
-                    { 2, 987654321, "Company B" }
+                    { 1, 1234589, "Company", "Company A" },
+                    { 2, 9876521, "Company", "Company B" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Companies",
+                columns: new[] { "ID", "Activity", "CNP", "CUI", "Discriminator", "Name" },
+                values: new object[] { 3, "Freelancing", 12567890, 1112234, "PFA", "PFA John Doe" });
+
+            migrationBuilder.InsertData(
+                table: "Companies",
+                columns: new[] { "ID", "CUI", "Discriminator", "Name", "RegistrationCode" },
+                values: new object[] { 4, 2223455, "SRL", "SRL Quick Services", 56789234 });
 
             migrationBuilder.InsertData(
                 table: "Employees",
@@ -271,7 +285,7 @@ namespace Heliondata.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "EmployeeProcess",
+                table: "EmployeeProcesses",
                 columns: new[] { "ID", "EmployeeId", "ProcessId" },
                 values: new object[,]
                 {
@@ -280,7 +294,7 @@ namespace Heliondata.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ProcessService",
+                table: "ProcessServices",
                 columns: new[] { "ID", "ProcessId", "ServiceId" },
                 values: new object[,]
                 {
@@ -289,7 +303,7 @@ namespace Heliondata.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ProcessWorkplace",
+                table: "ProcessWorkplaces",
                 columns: new[] { "ID", "ProcessId", "WorkplaceId" },
                 values: new object[,]
                 {
@@ -298,13 +312,13 @@ namespace Heliondata.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeProcess_EmployeeId",
-                table: "EmployeeProcess",
+                name: "IX_EmployeeProcesses_EmployeeId",
+                table: "EmployeeProcesses",
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeProcess_ProcessId",
-                table: "EmployeeProcess",
+                name: "IX_EmployeeProcesses_ProcessId",
+                table: "EmployeeProcesses",
                 column: "ProcessId");
 
             migrationBuilder.CreateIndex(
@@ -318,23 +332,23 @@ namespace Heliondata.Migrations
                 column: "RepresentativeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProcessService_ProcessId",
-                table: "ProcessService",
+                name: "IX_ProcessServices_ProcessId",
+                table: "ProcessServices",
                 column: "ProcessId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProcessService_ServiceId",
-                table: "ProcessService",
+                name: "IX_ProcessServices_ServiceId",
+                table: "ProcessServices",
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProcessWorkplace_ProcessId",
-                table: "ProcessWorkplace",
+                name: "IX_ProcessWorkplaces_ProcessId",
+                table: "ProcessWorkplaces",
                 column: "ProcessId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProcessWorkplace_WorkplaceId",
-                table: "ProcessWorkplace",
+                name: "IX_ProcessWorkplaces_WorkplaceId",
+                table: "ProcessWorkplaces",
                 column: "WorkplaceId");
 
             migrationBuilder.CreateIndex(
@@ -347,13 +361,13 @@ namespace Heliondata.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EmployeeProcess");
+                name: "EmployeeProcesses");
 
             migrationBuilder.DropTable(
-                name: "ProcessService");
+                name: "ProcessServices");
 
             migrationBuilder.DropTable(
-                name: "ProcessWorkplace");
+                name: "ProcessWorkplaces");
 
             migrationBuilder.DropTable(
                 name: "Employees");

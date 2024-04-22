@@ -17,7 +17,7 @@ builder.Services.AddDbContext<HelionDBContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddTransient<ProcessService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+builder.Services.AddScoped<CompanyRepository>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddCors(options =>

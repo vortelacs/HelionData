@@ -15,8 +15,14 @@ namespace Heliondata.Models.Mappers
                 GPSLocation = process.GPSLocation,
                 EmployeeNames = process.EmployeeProcesses?.Select(ep => ep.Employee?.FirstName + " " + ep.Employee?.LastName).ToList(),
                 ServiceNames = process.ProcessServices?.Select(ps => ps.Service?.Name).ToList(),
-                Workplace = process.ProcessWorkplaces?
-                        .ToDictionary(pw => pw.Workplace?.Name, pw => pw.Workplace?.Zone + " " + pw.Workplace?.City + " " + pw.Workplace?.Address)
+                Workplace = process.ProcessWorkplaces != null ?
+                    process.ProcessWorkplaces
+                    .Where(pw => pw.Workplace?.Name != null)
+                    .ToDictionary(
+                    pw => pw.Workplace.Name,
+                    pw => pw.Workplace?.Zone + " " + pw.Workplace?.City + " " + pw.Workplace?.Address
+                    )
+                    : new Dictionary<string, string>()
             };
 
             return processInfoDTO;

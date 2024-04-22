@@ -14,10 +14,20 @@ namespace Heliondata.Data
         public DbSet<Workplace> Workplaces { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Process> Processes { get; set; }
+        public DbSet<ProcessWorkplace> ProcessWorkplaces { get; set; }
+        public DbSet<EmployeeProcess> EmployeeProcesses { get; set; }
+        public DbSet<ProcessService> ProcessServices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Company>()
+            .HasDiscriminator<string>("Discriminator")
+            .HasValue<Company>("Company")
+            .HasValue<PFA>("PFA")
+            .HasValue<SRL>("SRL");
+
 
             modelBuilder.Entity<Service>().HasData(
             new Service { ID = 1, Name = "CCTV" },
@@ -28,10 +38,17 @@ namespace Heliondata.Data
             new Workplace { ID = 1, Name = "Headquarters", Zone = "Downtown", City = "New York", Address = "123 5th Ave" },
             new Workplace { ID = 2, Name = "Branch Office", Zone = "Uptown", City = "New York", Address = "456 7th Ave" }
             );
-
             modelBuilder.Entity<Company>().HasData(
-                new Company { ID = 1, CUI = 123456789, Name = "Company A" },
-                new Company { ID = 2, CUI = 987654321, Name = "Company B" }
+                new { ID = 1, CUI = 1234589, Name = "Company A", Discriminator = "Company" },
+                new { ID = 2, CUI = 9876521, Name = "Company B", Discriminator = "Company" }
+            );
+
+            modelBuilder.Entity<PFA>().HasData(
+                new { ID = 3, CUI = 1112234, Name = "PFA John Doe", CNP = 12567890, Activity = "Freelancing", Discriminator = "PFA" }
+            );
+
+            modelBuilder.Entity<SRL>().HasData(
+                new { ID = 4, CUI = 2223455, Name = "SRL Quick Services", RegistrationCode = 56789234, Discriminator = "SRL" }
             );
 
             modelBuilder.Entity<Representative>().HasData(

@@ -1,6 +1,5 @@
 using Heliondata.Models;
 using Heliondata.Models.DTO;
-using Heliondata.Models.JoinModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProcessServ = Heliondata.Services.ProcessService;
@@ -22,7 +21,7 @@ namespace Heliondata.Controllers
         [HttpPost("process")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Process>> SaveProcess(ProcessCreateRequestDTO processDTO)
+        public async Task<ActionResult<ProcessInfoDTO>> SaveProcess(ProcessCreateRequestDTO processDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -31,7 +30,7 @@ namespace Heliondata.Controllers
 
             try
             {
-                Process process = _processService.SaveProcess(processDTO).Result;
+                ProcessInfoDTO process = _processService.SaveProcess(processDTO).Result;
                 return CreatedAtAction(nameof(GetProcessById), new { id = process.ID }, process);
             }
             catch (DbUpdateException)
@@ -69,6 +68,14 @@ namespace Heliondata.Controllers
             }
 
             return Ok(process);
+        }
+
+
+        [HttpDelete("process/{id}")]
+        public async Task<bool> Delete(int id)
+        {
+            return await _processService.DeleteProcess(id);
+
         }
     }
 }

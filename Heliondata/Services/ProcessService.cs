@@ -1,8 +1,10 @@
+using Heliondata.Data;
 using Heliondata.Models;
 using Heliondata.Models.DTO;
 using Heliondata.Models.JoinModels;
 using Heliondata.Models.Mappers;
 using Heliondata.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProcessServiceModel = Heliondata.Models.JoinModels.ProcessService;
 
@@ -11,6 +13,7 @@ namespace Heliondata.Services
     public class ProcessService
     {
         private readonly ILogger<ProcessService> _logger;
+        private readonly HelionDBContext _helionDBContext;
         IGenericRepository<Process> _processRepository;
         IGenericRepository<Company> _companyRepository;
         IGenericRepository<Representative> _representativeRepository;
@@ -31,7 +34,9 @@ namespace Heliondata.Services
             IGenericRepository<EmployeeProcess> employeeProcessRepository,
             IGenericRepository<ProcessServiceModel> processServiceRepository,
             IGenericRepository<ProcessWorkplace> processWorkplaceRepository,
-            ILogger<ProcessService> logger)
+            ILogger<ProcessService> logger,
+            HelionDBContext helionDBContext
+            )
         {
             _processRepository = processRepository;
             _companyRepository = companyRepository;
@@ -43,6 +48,7 @@ namespace Heliondata.Services
             _processServiceRepository = processServiceRepository;
             _processWorkplaceRepository = processWorkplaceRepository;
             _logger = logger;
+            _helionDBContext = helionDBContext;
         }
 
         public Process GetProcess(int ID)
@@ -58,12 +64,12 @@ namespace Heliondata.Services
         }
 
 
-        public async Task<Process> SaveProcess(ProcessCreateRequestDTO processDTO)
+        public async Task<ProcessInfoDTO> SaveProcess(ProcessCreateRequestDTO processDTO)
         {
             Process process = MapDTOToProcess(processDTO);
             process = _processRepository.Add(process).Result;
             await CreateAndSaveJoinModelEntities(process, processDTO);
-            return process;
+            return ProcessMapper.MapProcessToProcessInfoDTO(process);
         }
 
 
@@ -134,6 +140,42 @@ namespace Heliondata.Services
                         ProcessId = process.ID
                     };
                     await _processWorkplaceRepository.Add(processWorkplace);
+                }
+            }
+        }
+
+
+        public async Task<bool> DeleteProcess(int processId)
+        {
+            using (var transaction = _helionDBContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var process = await _helionDBContext.Processes
+                        .Include(p => p.ProcessServices)
+                        .Include(p => p.ProcessWorkplaces)
+                        .Include(p => p.EmployeeProcesses)
+                        .SingleOrDefaultAsync(p => p.ID == processId);
+
+                    if (process == null)
+                        return false;
+
+                    _helionDBContext.ProcessServices.RemoveRange(process.ProcessServices);
+                    _helionDBContext.ProcessWorkplaces.RemoveRange(process.ProcessWorkplaces);
+                    _helionDBContext.EmployeeProcesses.RemoveRange(process.EmployeeProcesses);
+
+                    _helionDBContext.Processes.Remove(process);
+                    await _helionDBContext.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+
+                    await transaction.RollbackAsync();
+                    throw;
                 }
             }
         }

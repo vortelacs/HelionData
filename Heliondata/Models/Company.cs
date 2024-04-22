@@ -9,4 +9,15 @@ namespace Heliondata.Models
 
         public virtual List<Representative> Representatives { get; set; }
     }
+
+    public class PFA : Company
+    {
+        public int CNP { get; set; }
+        public string Activity { get; set; }
+    }
+
+    public class SRL : Company
+    {
+        public int RegistrationCode { get; set; }
+    }
 }

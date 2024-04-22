@@ -31,6 +31,11 @@ namespace Heliondata.Migrations
                     b.Property<int>("CUI")
                         .HasColumnType("int");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("varchar(8)");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
@@ -38,17 +43,23 @@ namespace Heliondata.Migrations
 
                     b.ToTable("Companies");
 
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Company");
+
+                    b.UseTphMappingStrategy();
+
                     b.HasData(
                         new
                         {
                             ID = 1,
-                            CUI = 123456789,
+                            CUI = 1234589,
+                            Discriminator = "Company",
                             Name = "Company A"
                         },
                         new
                         {
                             ID = 2,
-                            CUI = 987654321,
+                            CUI = 9876521,
+                            Discriminator = "Company",
                             Name = "Company B"
                         });
                 });
@@ -107,7 +118,7 @@ namespace Heliondata.Migrations
 
                     b.HasIndex("ProcessId");
 
-                    b.ToTable("EmployeeProcess");
+                    b.ToTable("EmployeeProcesses");
 
                     b.HasData(
                         new
@@ -142,7 +153,7 @@ namespace Heliondata.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("ProcessService");
+                    b.ToTable("ProcessServices");
 
                     b.HasData(
                         new
@@ -177,7 +188,7 @@ namespace Heliondata.Migrations
 
                     b.HasIndex("WorkplaceId");
 
-                    b.ToTable("ProcessWorkplace");
+                    b.ToTable("ProcessWorkplaces");
 
                     b.HasData(
                         new
@@ -374,6 +385,50 @@ namespace Heliondata.Migrations
                             City = "New York",
                             Name = "Branch Office",
                             Zone = "Uptown"
+                        });
+                });
+
+            modelBuilder.Entity("Heliondata.Models.PFA", b =>
+                {
+                    b.HasBaseType("Heliondata.Models.Company");
+
+                    b.Property<string>("Activity")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("CNP")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("PFA");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 3,
+                            CUI = 1112234,
+                            Discriminator = "PFA",
+                            Name = "PFA John Doe",
+                            Activity = "Freelancing",
+                            CNP = 12567890
+                        });
+                });
+
+            modelBuilder.Entity("Heliondata.Models.SRL", b =>
+                {
+                    b.HasBaseType("Heliondata.Models.Company");
+
+                    b.Property<int>("RegistrationCode")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("SRL");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 4,
+                            CUI = 2223455,
+                            Discriminator = "SRL",
+                            Name = "SRL Quick Services",
+                            RegistrationCode = 56789234
                         });
                 });
 

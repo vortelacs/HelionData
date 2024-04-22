@@ -5,6 +5,8 @@ namespace Heliondata.Models.DTO
         public int CUI { get; set; }
         public String Name { get; set; }
 
-        public virtual List<int> Representatives { get; set; }
+        public int? CNP { get; set; }
+        public string? Activity { get; set; }
+        public int? RegistrationCode { get; set; }
     }
 }
