@@ -14,10 +14,12 @@ namespace Heliondata.Models.Mappers
                 .ConstructUsing(dto => DecideCompanyType(dto));
 
             CreateMap<CompanyInfoDTO, PFA>()
+                .ForMember(dest => dest.CNP, opt => opt.Condition(src => src.CNP.HasValue))
                 .ForMember(dest => dest.CNP, opt => opt.MapFrom(src => src.CNP.Value))
                 .ForMember(dest => dest.Activity, opt => opt.MapFrom(src => src.Activity));
 
             CreateMap<CompanyInfoDTO, SRL>()
+                .ForMember(dest => dest.RegistrationCode, opt => opt.Condition(src => src.RegistrationCode.HasValue))
                 .ForMember(dest => dest.RegistrationCode, opt => opt.MapFrom(src => src.RegistrationCode.Value));
 
             CreateMap<Company, CompanyInfoDTO>();

@@ -88,7 +88,6 @@ namespace Heliondata.Services
                 RepresentativeId = processDTO.RepresentativeId
             };
 
-            // // Verify the existence of the company and representative without loading them
             // if (!_companyRepository.Exists(processDTO.CompanyId))
             // {
             //     throw new Exception($"Company with ID {processDTO.CompanyId} not found.");
