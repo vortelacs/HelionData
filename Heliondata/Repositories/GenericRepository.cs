@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Heliondata.Data;
+using Heliondata.Models;
 
 namespace Heliondata.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseModel
     {
 
         private readonly HelionDBContext _dbContext;
@@ -15,38 +16,43 @@ namespace Heliondata.Repositories
             _dbSet = _dbContext.Set<T>();
         }
 
-        public async Task<T> Add(T entity)
+        public async Task<int> Add(T entity)
         {
             _dbSet.Add(entity);
             await _dbContext.SaveChangesAsync();
-            return entity;
+            return entity.ID;
         }
-
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var entity = _dbSet.Find(id);
+            var entity = await _dbSet.FindAsync(id);
             if (entity != null)
             {
                 _dbSet.Remove(entity);
-                _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
             }
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return _dbSet.ToList();
+            return await _dbSet.ToListAsync();
         }
 
-        public T GetByID(int id)
+        public async Task<T> GetByID(int id)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.FindAsync(id);
         }
 
-        public void Update(T entity)
+
+        public async Task Update(T entity)
         {
+            var existingEntity = _dbSet.Local.FirstOrDefault(e => e.ID == entity.ID);
+            if (existingEntity != null)
+            {
+                _dbContext.Entry(existingEntity).State = EntityState.Detached;
+            }
             _dbSet.Attach(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
-            _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

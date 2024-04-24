@@ -13,8 +13,8 @@ namespace Heliondata.Controllers
         private readonly ILogger<CompanyController> _logger;
         private readonly CompanyRepository _companyRepository;
 
-        public CompanyController(HelionDBContext context, IMapper mapper, CompanyRepository companyRepository, ILogger<CompanyController> logger)
-            : base(context, mapper)
+        public CompanyController(IMapper mapper, CompanyRepository companyRepository, ILogger<CompanyController> logger)
+            : base(companyRepository, mapper)
         {
             _companyRepository = companyRepository;
             _logger = logger;
@@ -44,19 +44,26 @@ namespace Heliondata.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            try
+            Company company;
+            if (companyDto.CNP.HasValue)
             {
-                var company = _mapper.Map<Company>(companyDto);
-                _logger.LogInformation($"Before saving - Company type: {company.GetType().Name}, CNP: {((PFA)company).CNP}, Activity: {((PFA)company).Activity}");
-                var createdCompany = await _companyRepository.Add(company);
-                var resultDto = _mapper.Map<CompanyInfoDTO>(createdCompany);
-                return CreatedAtAction("GetCompany", new { id = createdCompany.ID }, resultDto);
+                var pfa = new PFA();
+                _mapper.Map(companyDto, pfa);
+                company = pfa;
             }
-            catch (Exception ex)
+            else if (companyDto.RegistrationCode.HasValue)
             {
-                return StatusCode(500, "An error occurred while creating the company.");
+                var srl = new SRL();
+                _mapper.Map(companyDto, srl);
+                company = srl;
             }
+            else
+            {
+                company = new Company();
+                _mapper.Map(companyDto, company);
+            }
+            int companyID = await _companyRepository.Add(company);
+            return CreatedAtAction("Detail", new { id = companyID }, companyID);
         }
     }
 

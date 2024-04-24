@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Heliondata")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+83b0faa31827b654fadc955bba3e602ade3bf726")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+588891131c2d93a67fecc61aaf32d47dea8e93d8")]
 [assembly: System.Reflection.AssemblyProductAttribute("Heliondata")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Heliondata")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -2,13 +2,13 @@ using Heliondata.Models;
 
 namespace Heliondata.Repositories
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : BaseModel
     {
-        IEnumerable<T> GetAll();
-        T GetByID(int id);
-        void Delete(int id);
-        void Update(T entity);
-        Task<T> Add(T entity);
+        Task<IEnumerable<T>> GetAll();
+        Task<T> GetByID(int id);
+        Task Delete(int id);
+        Task Update(T entity);
+        Task<int> Add(T entity);
 
     }
 }

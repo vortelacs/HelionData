@@ -2,6 +2,7 @@
 using AutoMapper;
 using Heliondata.Data;
 using Heliondata.Models;
+using Heliondata.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,29 +10,29 @@ namespace Heliondata.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CrudControllerBase<TEntity, TDto> : ControllerBase where TEntity : BaseModel where TDto : class
+    public class CrudControllerBase<T, TDto> : ControllerBase where T : BaseModel where TDto : class
     {
-        protected readonly HelionDBContext _context;
+        private readonly IGenericRepository<T> _repository;
         protected readonly IMapper _mapper;
 
-        public CrudControllerBase(HelionDBContext context, IMapper mapper)
+        public CrudControllerBase(IGenericRepository<T> repository, IMapper mapper)
         {
-            _context = context;
+            _repository = repository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public virtual async Task<IActionResult> List()
+        public async Task<IActionResult> List()
         {
-            var entities = await _context.Set<TEntity>().ToListAsync();
+            var entities = await _repository.GetAll();
             var dtos = entities.Select(entity => _mapper.Map<TDto>(entity)).ToList();
             return Ok(dtos);
         }
 
         [HttpGet("{id}")]
-        public virtual async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
+            var entity = await _repository.GetByID(id);
             if (entity == null)
                 return NotFound();
             var dto = _mapper.Map<TDto>(entity);
@@ -41,40 +42,32 @@ namespace Heliondata.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Create(TDto dto)
         {
-            var entity = _mapper.Map<TEntity>(dto);
-            _context.Set<TEntity>().Add(entity);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("Detail", new { id = entity.ID }, dto);
+            var entity = _mapper.Map<T>(dto);
+            int id = await _repository.Add(entity);
+            return CreatedAtAction("Detail", new { id = id }, dto);
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> Update(int id, TDto dto)
+        public async Task<IActionResult> Update(int id, TDto dto)
         {
-            if (!await EntityExists(id))
+            var existingEntity = await _repository.GetByID(id);
+            if (existingEntity == null)
                 return NotFound();
 
-            var entity = _mapper.Map<TEntity>(dto);
-            entity.ID = id; // Ensure the ID is set correctly
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _mapper.Map(dto, existingEntity);
+            await _repository.Update(existingEntity);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
+            var entity = await _repository.GetByID(id);
             if (entity == null)
                 return NotFound();
 
-            _context.Set<TEntity>().Remove(entity);
-            await _context.SaveChangesAsync();
+            await _repository.Delete(id);
             return NoContent();
-        }
-
-        private Task<bool> EntityExists(int id)
-        {
-            return _context.Set<TEntity>().AnyAsync(e => e.ID == id);
         }
     }
 }

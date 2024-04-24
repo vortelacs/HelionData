@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Heliondata.Models.JoinModels
 {
-    public class EmployeeProcess
+    public class EmployeeProcess : BaseModel
     {
-        [Key]
-        public int ID { get; set; }
 
         [ForeignKey("EmployeeId")]
         public int EmployeeId { get; set; }

@@ -51,7 +51,7 @@ namespace Heliondata.Services
             _helionDBContext = helionDBContext;
         }
 
-        public Process GetProcess(int ID)
+        public Task<Process> GetProcess(int ID)
         {
             return _processRepository.GetByID(ID);
         }
@@ -59,17 +59,24 @@ namespace Heliondata.Services
         public List<ProcessInfoDTO> GetAllProcess()
         {
             var processes = _processRepository.GetAll();
-            var processInfoDTOs = processes.Select(ProcessMapper.MapProcessToProcessInfoDTO).ToList();
+            var processInfoDTOs = processes.Result.Select(ProcessMapper.MapProcessToProcessInfoDTO).ToList();
             return processInfoDTOs;
         }
 
 
-        public async Task<ProcessInfoDTO> SaveProcess(ProcessCreateRequestDTO processDTO)
+        public async Task<int> SaveProcess(ProcessCreateRequestDTO processDTO)
         {
-            Process process = MapDTOToProcess(processDTO);
-            process = _processRepository.Add(process).Result;
-            await CreateAndSaveJoinModelEntities(process, processDTO);
-            return ProcessMapper.MapProcessToProcessInfoDTO(process);
+            try
+            {
+                Process process = MapDTOToProcess(processDTO);
+                int savedID = await _processRepository.Add(process);
+                await CreateAndSaveJoinModelEntities(process, processDTO);
+                return savedID;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("An error occurred while saving the process.", ex);
+            }
         }
 
 
