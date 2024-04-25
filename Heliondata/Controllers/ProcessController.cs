@@ -82,5 +82,14 @@ namespace Heliondata.Controllers
             return await _processService.DeleteProcess(id);
 
         }
+
+
+        [HttpGet("process/pdf/{id}")]
+        public async Task<IActionResult> GetProcessPdf(int id)
+        {
+            var pdfBytes = await _processService.GeneratePdfAsync(id);
+            return File(pdfBytes, "application/pdf", $"Process_{id}.pdf");
+
+        }
     }
 }

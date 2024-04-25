@@ -1,12 +1,19 @@
 using Heliondata.Data;
 using Heliondata.Models;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 using Heliondata.Models.DTO;
 using Heliondata.Models.JoinModels;
 using Heliondata.Models.Mappers;
 using Heliondata.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using ProcessServiceModel = Heliondata.Models.JoinModels.ProcessService;
+using SkiaSharp;
+using Svg.Skia;
+using iText.IO.Image;
 
 namespace Heliondata.Services
 {
@@ -185,6 +192,50 @@ namespace Heliondata.Services
                 }
             }
         }
+
+
+        public async Task<byte[]> GeneratePdfAsync(int processId)
+        {
+            var process = await _processRepository.GetByID(processId);
+            if (process == null)
+                throw new Exception("Process not found");
+
+            using var memoryStream = new MemoryStream();
+            using var pdfWriter = new PdfWriter(memoryStream);
+            using var pdfDocument = new PdfDocument(pdfWriter);
+            using var document = new Document(pdfDocument);
+
+            document.Add(new Paragraph($"Process ID: {process.ID}"));
+            document.Add(new Paragraph($"Sign Date: {process.SignDate.ToString("yyyy-MM-dd")}"));
+            document.Add(new Paragraph($"Company: {process.Company?.Name}"));
+            document.Add(new Paragraph($"Representative: {process.Representative?.LastName}"));
+
+            ImageData data = ImageDataFactory.Create(process.ESignature);
+            Image img = new Image(data);
+
+            img.SetFixedPosition(100, 200);
+            img.ScaleToFit(300, 300);
+
+            document.Add(img);
+
+            document.Close();
+            return memoryStream.ToArray();
+        }
+
+        public Image ConvertSvgToImage(string svgContent, PdfDocument pdfDocument)
+        {
+
+            var svg = new SKSvg();
+            svg.Load(new MemoryStream(Encoding.UTF8.GetBytes(svgContent)));
+
+            SKImage image = SKImage.FromPicture(svg.Picture, new SKSizeI((int)svg.Picture.CullRect.Width, (int)svg.Picture.CullRect.Height));
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            var imageData = iText.IO.Image.ImageDataFactory.Create(data.ToArray());
+
+            var pdfImage = new Image(imageData);
+            return pdfImage;
+        }
+
 
 
     }
